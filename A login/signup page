@@ -1,0 +1,25 @@
+A login/signup page:
+  For the front-end
+    1. CSS
+    2. HTML
+    3. JavaScript
+      Frame works you COULD USE
+        1. React
+          What it does: Helps you build parts of your website as components (like buttons, forms, etc.) and update them easily when things change.
+        2. Vue.js
+          Similar to React but easier to learn and more beginner-friendly.
+  For the Back-end
+    1. Python
+      Frame works you COULD USE
+        Flask
+          Handles routing (e.g., /login, /signup) and Lets you receive and respond to HTTP requests (GET, POST)
+        Flask-Login
+          Manages login sessions (who’s logged in) and Provides decorators like @login_required and Keeps track of users across requests
+        Werkzeug (comes with Flask)
+          generate_password_hash() – hashes user passwords and check_password_hash() – safely checks login password matches the hash
+        Flask-SQLAlchemy or SQLAlchemy
+          Allows you to define user models (like User with username, email, etc.) and Makes it easy to connect to and use SQLite, PostgreSQL, MySQL, etc.
+
+  For the data base
+    1. SQL
+    2. SQLite

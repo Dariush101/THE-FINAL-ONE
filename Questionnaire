@@ -1,1 +1,21 @@
+<!DOCTYPE html>
 
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="It is a Questionnaire to know the user"> 
+  <meta name="author" content="Andrew Dariush Boujabadi">
+  <title>Let's get to know you</title>
+</head>
+
+<body>
+  <h1>Are you a beginner, intermediate, advanced, or expert in the gym?</h1>
+  <form method="POST" action="/answer">
+    <label><input type="radio" name="fitness-level" value="beginner" required /> Beginner</label><br>
+    <label><input type="radio" name="fitness-level" value="intermediate" required /> Intermediate</label><br>
+    <label><input type="radio" name="fitness-level" value="advanced" required /> Advanced</label><br>
+    <label><input type="radio" name="fitness-level" value="expert" required /> Expert</label><br>
+    <button type="submit">Submit</button>
+  </form>
+
+
+</body>

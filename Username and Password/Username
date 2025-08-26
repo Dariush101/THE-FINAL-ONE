@@ -1,0 +1,74 @@
+###################################################################################################
+# Function: find_username
+# Purpose:
+#     Prompt the user to enter their username for login purposes.
+#
+# Returns:
+#     A trimmed string representing the entered username.
+#
+# Logic Flow (Step-by-step):
+#     Step 1: Display a prompt asking for the username.
+#     Step 2: Read input from the user.
+#     Step 3: Strip leading and trailing whitespace and return the cleaned username.
+#
+# When/how used:
+#     Called during login to capture the existing username.
+###################################################################################################
+def find_username():
+    # Step 1: Prompt user for their username
+    print("What is your username:")
+
+    # Step 2: Read user input and trim whitespace
+    username_input = input().strip()
+
+    # 🐞 DEBUG: Output length of username entered (not the username itself for privacy)
+    print(f"🐞 DEBUG: Username input length = {len(username_input)} characters")
+
+    # Step 3: Return the cleaned username string
+    return username_input
+
+
+###################################################################################################
+# Function: get_username
+# Purpose:
+#     Prompt the user to create or choose a new username during registration.
+#
+# Returns:
+#     A trimmed string representing the chosen username.
+#
+# Logic Flow (Step-by-step):
+#     Step 1: Display a prompt asking the user to choose a username.
+#     Step 2: Read input from the user.
+#     Step 3: Strip leading and trailing whitespace and return the cleaned username.
+#
+# When/how used:
+#     Called during registration to capture a new username.
+###################################################################################################
+def get_username():
+    # Step 1: Prompt user to choose a username
+    print("Choose a username:")
+
+    # Step 2: Read user input and trim whitespace
+    chosen_username = input().strip()
+
+
+    username = True
+    while username:
+        print(f"Are You Sure you want you username to be {chosen_username}")
+        print("1. Yes or 2. No")
+        check_username = int(input())
+        if check_username == 1:
+            break
+        elif check_username ==2:
+            print("Choose a username:")
+            # Step 2: Read user input and trim whitespace
+            chosen_username = input().strip()
+        else:
+            print("Please choose one of the options.")
+
+
+    # # 🐞 DEBUG: Output length of chosen username
+    # print(f"🐞 DEBUG: Chosen username length = {len(chosen_username)} characters")
+
+    # Step 3: Return the cleaned username string
+    return chosen_username

@@ -1,0 +1,196 @@
+import timeit
+import cProfile
+# import pstats
+# import io
+
+
+
+
+
+def account():
+    # Step 1a: Import required modules and configure import path
+    import sys
+    import os
+    from database import SQL_create_and_Connects
+    from Gym_Maker.getting_to_know_you import get_gym_preferences
+    from Gym_Maker.AI_gym_schedule_maker.AI_schedule_builder import schedule_builder
+    from Gym_Maker.AI_gym_schedule_maker.AI_goal_of_the_gym import goal_of_the_gym
+    from Gym_Maker.AI_gym_schedule_maker.AI_generate_muscle_growth_workouts import generate_muscle_growth_workouts
+    from Gym_Maker.AI_gym_schedule_maker.AI_Schedule_with_workout import AI_Schedule_with_workout
+    from Username_and_Password_maker.username import find_username, get_username
+    from Username_and_Password_maker.password import find_password,get_password
+
+    # 🐞 DEBUG: Ensure 'App' is treated as the root package so all relative imports work
+    sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
+    # Step 1b: Declare and initialize variables
+    login_successful = False            # Tracks if login or registration was successful
+    max_login_attempts = 4              # Max number of login attempts allowed
+    current_attempt = 0                 # Tracks the number of failed login attempts
+    user_name = None                    # Stores user's username
+    user_password = None                # Stores user's password
+
+    # Step 2: Ensure the database and required tables exist
+    SQL_create_and_Connects.running()
+
+
+    while not login_successful:
+
+        # Step 3: Prompt the user for account status
+        print("Do you have an account: 1. Yes or 2. No")
+        user_choice = int(input())
+
+        # Step 4: If user has an account
+        if user_choice == 1:
+            # Step 4a: Ask for username and password
+            user_name = find_username()
+            user_password = find_password()
+
+            # Step 4b: Check database for matching credentials
+            user_exists = SQL_create_and_Connects.player_exists(user_name, user_password)
+
+            if user_exists:
+                # Step 4c: Credentials are valid — login successful
+                print(f"Welcome back, {user_name}!")
+                login_successful = True
+
+                # 🧠 Come Back and work on this
+                # Update_SQL.finding_old_information(user_name, user_password)
+
+            else:
+                # Step 4d: Allow user to retry login or choose to register instead
+                while not login_successful and current_attempt < max_login_attempts:
+                    current_attempt += 1
+                    remaining_attempts = max_login_attempts - current_attempt
+
+                    if remaining_attempts > 0:
+                        print("We did not find your account. Are you sure you have an account with us? 1. Yes or 2. No")
+                        print(f"You have {remaining_attempts} attempt(s) left.")
+                        retry_choice = int(input())
+
+                        # 🧠 Come Back and work on this
+                        # Uncomment and implement this to allow retries or switch to registration
+                        """
+                        if retry_choice == 1:
+                            user_name = get_username()
+                            user_password = find_password()
+                            user_exists = SQL_create_and_Connects.player_exists(user_name, user_password)
+                            if user_exists:
+                                login_successful = True
+                                print(f"Welcome back, {user_name}!")
+                                Update_SQL.get_player_info(user_name, user_password)
+                        elif retry_choice == 2:
+                            user_name = get_username()
+                            user_password = get_password()
+                            print(f"User created: {user_name}")
+                            SQL_create_and_Connects.add_player(user_name, user_password)
+                            login_successful = True
+                            break
+                        """
+                    else:
+                        print("Sorry, we can't find your account. Please come back later.")
+                        break
+
+        # Step 5: If user does not have an account
+        elif user_choice == 2:
+            # Step 5a: Prompt for account creation
+            print("Let's make a username and password.")
+            user_name = get_username()
+            user_password = get_password()
+            print(f"User created: {user_name}")
+
+            # Step 5b: Add new user to the database
+            SQL_create_and_Connects.add_player(user_name, user_password)
+
+            # Step 5c: Set up user's workout plan
+            updates, choose, time_per_week = get_gym_preferences()
+
+            if choose == 1:
+                # Step 5d: User chose to customize a workout plan
+                muscle, fat, strength, endurance, stability = goal_of_the_gym()
+                time = schedule_builder(time_per_week)
+                exercises = generate_muscle_growth_workouts(updates, muscle, fat, strength, endurance, stability)
+                full_schedule_dict = AI_Schedule_with_workout(time, exercises, updates)
+            elif choose == 2:
+                # 🐞 DEBUG: Placeholder for an alternative schedule logic (not implemented)
+                print(2)
+
+            login_successful = True
+
+        else:
+            print("Please choose one of the options.")
+
+    # Step 6: Final return based on success
+    if login_successful:
+        return user_name, user_password
+    else:
+        print("Account login/creation unsuccessful.")
+
+
+
+
+
+
+
+
+def run_main_workflow():
+    from datetime import datetime
+    now = datetime.now()  # Moved here so you can use it later
+    from database import SQL_create_and_Connects
+
+    SQL_create_and_Connects.add_player("Dariush", "Dariush1978!")
+
+    from Gym_Maker.AI_gym_schedule_maker.AI_generate_muscle_growth_workouts import generate_muscle_growth_workouts
+    muscle, fat, strength, endurance, stability = 1, 0, 0, 0, 0
+    updates = {'45 minutes-1 hour': [6, 8]}
+    
+    muscle_targets = generate_muscle_growth_workouts(updates, muscle, fat, strength, endurance, stability)
+        
+    from Gym_Maker.AI_gym_schedule_maker.AI_schedule_builder import schedule_builder
+    time_per_week = 1
+    works_and_day = schedule_builder(time_per_week)
+    
+    from Gym_Maker.AI_gym_schedule_maker.AI_Schedule_with_workout import AI_Schedule_with_workout
+    full_schedule_dict=AI_Schedule_with_workout(works_and_day, muscle_targets,updates)
+
+    from App.time.getting_time import get_formatted_current_datetime
+    day , day_number, month, year, date = get_formatted_current_datetime()
+
+
+    from Gym_Maker.AI_gym_schedule_maker.AI_reps import AI_reps
+    AI_reps(full_schedule_dict,date, day,muscle)
+
+    # SQL_create_and_Connects.print_workouts_by_day()
+
+
+
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    # Profile the run_main_workflow function execution with cProfile
+    profiler = cProfile.Profile()
+    profiler.enable()
+    account()  # Run the main workflow
+    # run_main_workflow()
+    # user_exists = Update_SQL.get_player_info("Dariush", "Dariush1978!")
+
+    profiler.disable()
+
+    # Time the run_main_workflow function execution
+    # elapsed_time = timeit.timeit(account, number=1)
+    # print(f"Execution time for run_main_workflow (timeit): {elapsed_time:.4f} seconds\n")
+    # # Collect stats and print sorted by cumulative time
+    # stream = io.StringIO()
+    # stats = pstats.Stats(profiler, stream=stream).sort_stats('cumulative')
+    # stats.print_stats()
+    # print("Profiling result (cProfile):")
+    # print(stream.getvalue())
+
+    # # Save profile data for SnakeViz visualization
+    # stats.dump_stats('profile_output.prof')
+    # print("Profile data saved to profile_output.prof")
